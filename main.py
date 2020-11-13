@@ -1,5 +1,5 @@
 # main file
 
-
+print("Stupid")
 
 
