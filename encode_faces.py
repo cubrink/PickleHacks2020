@@ -66,7 +66,12 @@ for idx, row in df.iterrows():
     # Create encoding
     my_face_encodings = face_recognition.face_encodings(face_image)
 
-    my_face_encoding = my_face_encodings[0]
+    try:
+        my_face_encoding = my_face_encodings[0]
+    except IndexError:
+        with open('error.log', 'a') as outfile:
+            outfile.write(f"{row['path']} had no face encodings.\n")
+        continue
         
 
     # We could use pickle... but efficiency :(
