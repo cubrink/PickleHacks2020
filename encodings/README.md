@@ -1,0 +1,1 @@
+This folder contains face encodings for various people from wikipedia.

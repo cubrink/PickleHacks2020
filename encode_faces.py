@@ -11,12 +11,25 @@ DATASET_PATH = r'./dataset.csv'
 
 df = pd.read_csv(DATASET_PATH, sep='|')
 
+SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
+
+START_INC = 20000
+STOP_EXC = 20030
+
+BACKUP_LENGTH = 10
 
 for idx, row in df.iterrows():
-    start = datetime.now()
-    print(idx)
+    if not (START_INC <= idx < STOP_EXC):
+        continue
+
+    if idx%BACKUP_LENGTH == 0:
+        df.to_csv(f"./dataset-{START_INC}-{idx}.csv", sep='|', index=False)
+        
+
+    print("Starting: #", idx)    
     # Load image from row
     image = face_recognition.load_image_file(row['path'])
+    
     # image = face_recognition.load_image_file("family.jpeg")
 
     # Get all face locations
@@ -46,7 +59,6 @@ for idx, row in df.iterrows():
     right = min(image.shape[1], right+horizontal_border)
 
 
-
     face_image = image[top:bottom, left:right]
     # pil_image = Image.fromarray(face_image)
     # pil_image.show()
@@ -54,42 +66,34 @@ for idx, row in df.iterrows():
     # Create encoding
     my_face_encodings = face_recognition.face_encodings(face_image)
 
-    print(f"{len(my_face_encodings) =}")
-
-    if len(my_face_encodings) == 0:
-        print(" ------------------------ ")
-        print(row['path'], "is broken")
-        print(" ------------------------ ")
-
-        input("Press enter to continue...")
-
-
-    try:
-        my_face_encoding = my_face_encodings[0]
-    except:
-        print(row['path'])
-        orig_image = Image.fromarray(face_image_orig)
-        orig_image.show("Original")
-        input("Showing original: Press enter to continue...")
-
-        pil_image = Image.fromarray(face_image)
-        pil_image.show("Modified")
-        input("Showing Modified: Press enter to continue...")
+    my_face_encoding = my_face_encodings[0]
         
 
     # We could use pickle... but efficiency :(
-    with open(r'./that_dude.npy', 'wb') as outfile:
+    filename = row['path'].partition('wiki')[-1].partition('.jpg')[0] + '.npy'
+    filename = '/' + filename.replace('/', '_')
+
+    print(SAVE_DIR_BASE)
+    path_to_open = SAVE_DIR_BASE + filename
+
+    print("...", path_to_open)
+
+    print(f"Saving to {filename}")
+
+    with open(path_to_open, 'wb') as outfile:
         np.save(outfile, my_face_encoding)
-   
+        df.iloc[0]['encoding'] = './encoding' + filename
+
+
 
     unknown_encoding = face_recognition.face_encodings(image)
 
-    delta = datetime.now() - start
 
-    print("Total seconds: ", delta.total_seconds())
 
-    # for encoding in unknown_encoding:
-    #     results = face_recognition.compare_faces([my_face_encoding], encoding)
-    #     print(results)
+
+df.to_csv(f"./dataset-{START_INC}-DONE.csv", sep='|', index=False)
+
+print("Done!")
+
 
         
