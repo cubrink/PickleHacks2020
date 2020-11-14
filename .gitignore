@@ -1,5 +1,6 @@
 /wiki/*
 /old_files/*
+/test_images/*
 /.vscode/settings.json
 .DS_Store
 *.tar.gz

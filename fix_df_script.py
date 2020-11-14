@@ -13,27 +13,15 @@ df = pd.read_csv(DATASET_PATH, sep='|')
 
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 0
-STOP_EXC = 15000
+START_INC = 15000
+STOP_EXC = 30000
 
 BACKUP_LENGTH = 500
 
 for idx, row in df.iterrows():
     if not (START_INC <= idx < STOP_EXC):
         continue
-
-
-    print("Starting: #", idx)    
-        
-
-
-    # try:
-    #     my_face_encoding = my_face_encodings[0]
-    # except IndexError:
-    #     with open('error.log', 'a') as outfile:
-    #         outfile.write(f"{row['path']} had no face encodings.\n")
-    #     continue
-        
+ 
 
     # We could use pickle... but efficiency :(
     filename = row['path'].partition('wiki')[-1].partition('.jpg')[0] + '.npy'
@@ -42,23 +30,14 @@ for idx, row in df.iterrows():
     path_to_open = SAVE_DIR_BASE + filename
 
 
-    # print(f"Saving to {filename}")
-
     if os.path.isfile(path_to_open):
         df.iloc[idx]['encoding'] = './encoding' + filename
 
 
-    # print()
-    # print(' -------------------------------- ')
-    # print()
+    df.to_csv("./dataset.csv", sep='|', index=False)
 
-
-
-
-df.to_csv(f"./dataset.csv", sep='|', index=False)
 
 print("Done!")
-
 
 
         
