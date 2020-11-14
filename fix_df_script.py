@@ -13,8 +13,8 @@ df = pd.read_csv(DATASET_PATH, sep='|')
 
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 15000
-STOP_EXC = 30000
+START_INC = 0
+STOP_EXC = 15000
 
 BACKUP_LENGTH = 500
 
@@ -55,8 +55,10 @@ for idx, row in df.iterrows():
 
 
 
+df.to_csv(f"./dataset.csv", sep='|', index=False)
 
 print("Done!")
+
 
 
         

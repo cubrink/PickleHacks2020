@@ -13,8 +13,8 @@ df = pd.read_csv(DATASET_PATH, sep='|')
 
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 15000
-STOP_EXC = 30000
+START_INC = 30000
+STOP_EXC = 100000
 
 BACKUP_LENGTH = 500
 
@@ -85,7 +85,7 @@ for idx, row in df.iterrows():
 
     with open(path_to_open, 'wb') as outfile:
         np.save(outfile, my_face_encoding)
-        df.iloc[0]['encoding'] = './encoding' + filename
+        df.iloc[idx]['encoding'] = './encoding' + filename
 
     print()
     print(' -------------------------------- ')
