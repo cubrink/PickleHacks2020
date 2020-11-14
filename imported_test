@@ -73,13 +73,17 @@ for item in isize:
 
 print(str(largest))
 
-  
+faces[i-1].save("tmp.jpg")
+
+prelim = face_recognition.load_image_file("tmp.jpg")
+my_face_encoding = face_recognition.face_encodings(prelim)[0]
 
 
 pil_image.show(faces[i-1])
 
 print("The size of the face is: " + str(largest) + " pixels")
 
+print("The encoding is: " + str(my_face_encoding))
 
 
 
