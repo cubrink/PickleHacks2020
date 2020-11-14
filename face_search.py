@@ -2,17 +2,15 @@ import face_recognition
 from PIL import Image
 import pandas as pd
 import numpy as np
-from datetime import datetime
 import os
-import sys
-from pprint import pprint
-import wikipedia
-import webbrowser
 
 
 def create_face_encoding(filepath):
-    # this function returns the face encoding of the image
-    # this function returns None is not face
+    """
+    Returns the face encoding of an image at a specified filepath
+
+    filepath    : Path to image file to get face from
+    """
     face_image = create_face_image(filepath)
 
     # Create encoding
@@ -26,6 +24,11 @@ def create_face_encoding(filepath):
 
 
 def create_face_image(filepath):
+    """
+    Returns np.array that contains the largest face at a specified filepath
+
+    filepath    : Path to image file to get face from
+    """
     image = face_recognition.load_image_file(filepath)
     # Get all face locations
     face_locations = face_recognition.face_locations(image)
@@ -41,7 +44,6 @@ def create_face_image(filepath):
     # Extract face from image
     border_mult = 1.5
     top, right, bottom, left = face
-    face_image_orig = image[top:bottom, left:right]
 
     vertical_border = int((bottom - top) * border_mult / 2)
     horizontal_border = int((right - left) * border_mult / 2)
@@ -51,30 +53,45 @@ def create_face_image(filepath):
     bottom = min(image.shape[0], bottom+vertical_border)
     left = max(0, left-horizontal_border)
     right = min(image.shape[1], right+horizontal_border)
-
     return image[top:bottom, left:right]
 
 
-
 def get_face_encoding(filepath):
+    """
+    Loads a face encoding from a specified filepath
+
+    filepath            : Path to face encoding
+    """
     with open(os.path.abspath(filepath), 'rb') as infile:
         encoding = np.load(infile)
     return encoding
 
     
 def compare_faces(face_encodings_fp, face_to_compare, up_to_n=5):
+    """
+    Returns face top faces from a batch of encodings
+
+    face_encodings_fp   : List of filepaths to face encodings
+    face_to_compare     : Encoding of user's face
+    up_to_n             : Integer specifying the amount of results to return
+
+    """
     face_encodings =  [get_face_encoding(fp) for fp in face_encodings_fp]
     results = face_recognition.face_distance(face_encodings, face_to_compare)
     results = [(fp, r) for fp, r in zip(face_encodings_fp, results)]
 
-    # sys.exit(1)
     results.sort(key=lambda x: x[1])
 
     return results[:up_to_n]
 
 
-
 def batches(df, batch_size):
+    """
+    Generator that yields a specified amount of rows from a DataFrame
+
+    df              : DataFrame containing image metadata
+    batch_size      : Size of batches to use
+    """
     i = 0
     while i*batch_size < df.shape[0]:
         max_idx = min( (i+1) * batch_size, df.shape[0])
@@ -83,7 +100,14 @@ def batches(df, batch_size):
 
 
 def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=False):
-    # Filter sex, if specified
+    """
+    Returns a dataframe of the best matches of a user image
+
+    df              : DataFrame containing image metadata
+    user_image      : Filepath to the user image
+    up_to_n         : The amount of results to return
+    show_user_face  : Toggles whether the user will see their own face
+    """
     if gender is not None:
         df = df[df['gender'] == gender]
 
@@ -109,11 +133,14 @@ def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=Fal
         # Show user face, if specified
         face_image = create_face_image(user_image)
         Image.fromarray(face_image).show()
-
     return df
     
 
+
+
 if __name__ == "__main__":
+    from datetime import datetime
+
     DATASET_PATH = r'./dataset.csv'
     df = pd.read_csv(DATASET_PATH, sep='|')
 

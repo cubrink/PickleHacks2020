@@ -5,8 +5,6 @@ from PIL import Image
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import os
-import sys
 from pprint import pprint
 import wikipedia
 import webbrowser
@@ -21,6 +19,9 @@ WIKI_BASE = 'https://en.wikipedia.org/wiki/'
 
 
 def build_parser():
+    """
+    Builds parser for command line arguments
+    """
     parser = argparse.ArgumentParser(description='Wiki Look-Alike: Find your look-alike on Wikipedia!')
     parser.add_argument(
         'user_filepath', 
@@ -68,8 +69,6 @@ if __name__ == "__main__":
     
     delta = datetime.now() - start
     print("\nTook ", delta.total_seconds(), "seconds to complete!\n")
-
-    print(best)
 
     # print found names
     for idx, row in best.iterrows():
