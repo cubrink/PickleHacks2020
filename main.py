@@ -36,7 +36,7 @@ with open('wiki_data_no_marks.csv', 'w', newline='') as writecsv:
             try:
                 # try to get wiki page details and create url
                 wiki_page = wikipedia.page(title=name_of_person)
-                url_to_add = urllib.parse.quote_plus(url+name_of_person)
+                url_to_add = url + urllib.parse.quote_plus(name_of_person)
 
             except wikipedia.exceptions.PageError:
                 continue
