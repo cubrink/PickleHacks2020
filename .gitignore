@@ -1,3 +1,4 @@
 /wiki/*
 /.vscode/settings.json
 .DS_Store
+*.tar.gz
