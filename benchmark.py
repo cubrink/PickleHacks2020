@@ -71,12 +71,12 @@ def compare_faces(face_encodings_fp, face_to_compare):
     # pprint(results)
 
     # sys.exit(1)
-    results.sort(key=lambda x: x[1], reverse=True)
+    results.sort(key=lambda x: x[1])
 
 
     # delta = datetime.now() - start
     # print("Batch took ", delta.total_seconds(), "to complete.")
-    return results[0]
+    return results[:5]
 
 
 
@@ -94,16 +94,23 @@ if __name__ == "__main__":
 
     df = df[df['gender'] == 'Male']
 
-    best = (None, 0)
+    best = [(None, 10)] * 5
 
     # user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
+<<<<<<< HEAD
     user_file_location = './test_images/andy_k.jpg'
     user_face_encoding = create_face_encoding(user_file_location, True)
+=======
+    user_file_location = 'tmp.jpg'
+    user_face_encoding = create_face_encoding(user_file_location, False)
+>>>>>>> 365e10a28c6d788a99befeef9b4acd7a3959cfed
 
     start = datetime.now()
     for batch in batches(df, 128):
         results = compare_faces(list(batch['encoding']), user_face_encoding)
-        best = max(best, results, key=lambda x: x[1])
+        best.extend(results)
+        best.sort(key=lambda x: x[1])
+        best = best[:5]
         # pprint("best: ", list(best))
     
     print("Best = ", best)
