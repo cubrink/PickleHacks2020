@@ -24,9 +24,10 @@ df = df[df['name'].apply(lambda x: len(x)) == 1]
 for col in ['path', 'name']:
     df[col] = df[col].apply(lambda x: x[0])
 
+
+df['path'] = df['path'].apply(lambda x: r'./wiki/' + x)
 df['dob'] = df['dob'].apply(lambda x: date.fromordinal(x))
 df['gender'].replace([0.0, 1.0], ['Female', 'Male'], inplace=True)
 
 df.to_csv("./dataset.csv", sep='|', index=False)
 
-print(df)
