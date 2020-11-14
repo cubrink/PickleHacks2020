@@ -73,10 +73,8 @@ for idx, row in df.iterrows():
     filename = row['path'].partition('wiki')[-1].partition('.jpg')[0] + '.npy'
     filename = '/' + filename.replace('/', '_')
 
-    print(SAVE_DIR_BASE)
     path_to_open = SAVE_DIR_BASE + filename
 
-    print("...", path_to_open)
 
     print(f"Saving to {filename}")
 
@@ -84,9 +82,11 @@ for idx, row in df.iterrows():
         np.save(outfile, my_face_encoding)
         df.iloc[0]['encoding'] = './encoding' + filename
 
+    print()
+    print(' -------------------------------- ')
+    print()
 
 
-    unknown_encoding = face_recognition.face_encodings(image)
 
 
 
