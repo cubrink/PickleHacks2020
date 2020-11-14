@@ -27,7 +27,6 @@ def create_face_encoding(filepath):
 
 def create_face_image(filepath):
     image = face_recognition.load_image_file(filepath)
-
     # Get all face locations
     face_locations = face_recognition.face_locations(image)
 
@@ -39,7 +38,6 @@ def create_face_image(filepath):
     else:
         face = face_locations[0]
         
-
     # Extract face from image
     border_mult = 1.5
     top, right, bottom, left = face
@@ -65,17 +63,13 @@ def get_face_encoding(filepath):
 
     
 def compare_faces(face_encodings_fp, face_to_compare, up_to_n=5):
-    # start = datetime.now()
     face_encodings =  [get_face_encoding(fp) for fp in face_encodings_fp]
     results = face_recognition.face_distance(face_encodings, face_to_compare)
     results = [(fp, r) for fp, r in zip(face_encodings_fp, results)]
-    # pprint(results)
 
     # sys.exit(1)
     results.sort(key=lambda x: x[1])
 
-    # delta = datetime.now() - start
-    # print("Batch took ", delta.total_seconds(), "to complete.")
     return results[:up_to_n]
 
 
@@ -89,33 +83,35 @@ def batches(df, batch_size):
 
 
 def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=False):
+    # Filter sex, if specified
     if gender is not None:
         df = df[df['gender'] == gender]
+
+    # Set bounds on n
     up_to_n = max(min(up_to_n, 128), 1)
 
+    # Create temp list of best results
     best = [(None, 10)] * up_to_n
-    user_face_encoding = create_face_encoding(user_image)
 
+    user_face_encoding = create_face_encoding(user_image)
     for batch in batches(df, 128):
+        # Iterate through faces encodings, 128 at a time
         results = compare_faces(list(batch['encoding']), user_face_encoding)
         best.extend(results)
         best.sort(key=lambda x: x[1])
         best = best[:up_to_n]
 
+    # Sanitize results
     df = df[df['encoding'].isin([b[0] for b in best])]
     df.reset_index(inplace=True)
 
     if show_user_face:
+        # Show user face, if specified
         face_image = create_face_image(user_image)
         Image.fromarray(face_image).show()
 
-    print(df)
-
     return df
     
-
-
-
 
 if __name__ == "__main__":
     DATASET_PATH = r'./dataset.csv'

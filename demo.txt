@@ -1,0 +1,5 @@
+python3 WikiLookALike.py ./test_images/curtis_b.jpg
+
+python3 WikiLookALike.py ./test_images/jeff_pic.jpg -n 3
+
+python3 WikiLookALike.py --help
