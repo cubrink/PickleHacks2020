@@ -26,11 +26,29 @@ full_name = wikipedia.suggest(broken_names[2][1].replace('?', ''))
 
 person_keywords = ['people', 'player', 'person', 'female', 'male', 'boy', 'girl', 'birth', 'death']
 
+bad_idxs = []
 
-print('------------------------------------------------')
-print('Full Name:', full_name)
-print('HTML Link')
-#print(wikipedia.html(full_name))
-print('Categories')
-#print(wikipedia.categories(full_name))
-print('------------------------------------------------')
+categories = set()
+
+for idx, name in broken_names[:50]:
+    suggested_name = wikipedia.suggest(name.replace('?', ''))
+    print(f"Suggested name = {suggested_name}")
+    try:
+        page = wikipedia.page(title=suggested_name)
+    except wikipedia.exceptions.PageError:
+        bad_idxs.append(idx)
+        continue
+    categories.update(page.categories)
+
+
+
+
+# print('------------------------------------------------')
+# print('Full Name:', full_name)
+# print('HTML Link')
+# #print(wikipedia.html(full_name))
+# print('Categories')
+# #print(wikipedia.categories(full_name))
+# print('------------------------------------------------')
+
+
