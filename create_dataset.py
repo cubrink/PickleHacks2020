@@ -14,20 +14,12 @@ path   =    matfile['wiki']['full_path'][0][0][0]
 df = pd.DataFrame([path, names, dob, gender])
 df = df.transpose()
 
-print(df)
-
 df.columns = ['path', 'name', 'dob', 'gender']
 
 urls = pd.Series([" "] * df.shape[0], dtype=str)
 df['url'] = urls
 
-
-
-len(df)
-
 df = df[df['name'].apply(lambda x: len(x)) == 1]
-
-len(df)
 
 for col in ['path', 'name']:
     df[col] = df[col].apply(lambda x: x[0])
