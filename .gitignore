@@ -1,4 +1,5 @@
 /wiki/*
+/old_files/*
 /.vscode/settings.json
 .DS_Store
-*.tar.gz
+*.tar.gzs
