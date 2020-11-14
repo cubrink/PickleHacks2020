@@ -13,10 +13,10 @@ df = pd.read_csv(DATASET_PATH, sep='|')
 
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 20000
-STOP_EXC = 20030
+START_INC = 15000
+STOP_EXC = 30000
 
-BACKUP_LENGTH = 10
+BACKUP_LENGTH = 500
 
 for idx, row in df.iterrows():
     if not (START_INC <= idx < STOP_EXC):
