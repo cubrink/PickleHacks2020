@@ -85,7 +85,7 @@ for idx, row in df.iterrows():
 
     with open(path_to_open, 'wb') as outfile:
         np.save(outfile, my_face_encoding)
-        df.iloc[0]['encoding'] = './encoding' + filename
+        df.iloc[idx]['encoding'] = './encoding' + filename
 
     print()
     print(' -------------------------------- ')
