@@ -13,8 +13,6 @@ import webbrowser
 
 from face_search import find_best_matches
 
-
-
 if __name__ == "__main__":
     DATASET_PATH = r'./dataset.csv'
     df = pd.read_csv(DATASET_PATH, sep='|')
@@ -34,10 +32,3 @@ if __name__ == "__main__":
     wiki_page = wikipedia.page(title=best['name'][0])
     Image.open(best['path'][0]).show()
     webbrowser.open(wiki_page.url)
-
-
-
-
-
-
-
