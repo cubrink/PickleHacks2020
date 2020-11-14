@@ -126,4 +126,8 @@ if user_face_encoding is not None:
 
 
 
+    # print("Best = ", best)
+    # best_person_in_df = df[df['encoding'] == best[0]].reset_index(inplace=True)
 
+    # wiki_page = wikipedia.page(title=best_person_in_df['name'][0])
+    # webbrowser.open(wiki_page.url)

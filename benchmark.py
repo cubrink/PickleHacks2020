@@ -6,6 +6,8 @@ from datetime import datetime
 import os
 import sys
 from pprint import pprint
+import wikipedia
+import webbrowser
 
 
 def create_face_encoding(image_loc, show_image = False):
@@ -95,8 +97,8 @@ if __name__ == "__main__":
     best = (None, 0)
 
     # user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
-    user_file_location = 'jeff_pic.jpg'
-    user_face_encoding = create_face_encoding(user_file_location, False)
+    user_file_location = './test_images/andy_k.jpg'
+    user_face_encoding = create_face_encoding(user_file_location, True)
 
     start = datetime.now()
     for batch in batches(df, 128):
@@ -105,6 +107,9 @@ if __name__ == "__main__":
         # pprint("best: ", list(best))
     
     print("Best = ", best)
+    # best_person_in_df = df[df['encoding'] == best[0]].reset_index(inplace=True)
+
+
     delta = datetime.now() - start
     print("Batch took ", delta.total_seconds(), "to complete.")
     print(best)
