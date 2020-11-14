@@ -10,10 +10,23 @@ import wikipedia
 import webbrowser
 
 
-def create_face_encoding(image_loc, show_image = False):
+def create_face_encoding(filepath):
     # this function returns the face encoding of the image
     # this function returns None is not face
-    image = face_recognition.load_image_file(image_loc)
+    face_image = create_face_image(filepath)
+
+    # Create encoding
+    my_face_encodings = face_recognition.face_encodings(face_image)
+
+    try:
+        return my_face_encodings[0]
+    except IndexError:
+        print('No Face Found!')
+        return None
+
+
+def create_face_image(filepath):
+    image = face_recognition.load_image_file(filepath)
 
     # Get all face locations
     face_locations = face_recognition.face_locations(image)
@@ -41,20 +54,8 @@ def create_face_encoding(image_loc, show_image = False):
     left = max(0, left-horizontal_border)
     right = min(image.shape[1], right+horizontal_border)
 
-    face_image = image[top:bottom, left:right]
+    return image[top:bottom, left:right]
 
-    if show_image:
-        pil_image = Image.fromarray(face_image)
-        pil_image.show()
-
-    # Create encoding
-    my_face_encodings = face_recognition.face_encodings(face_image)
-
-    try:
-        return my_face_encodings[0]
-    except IndexError:
-        print('No Face Found!')
-        return None
 
 
 def get_face_encoding(filepath):
@@ -73,7 +74,6 @@ def compare_faces(face_encodings_fp, face_to_compare, up_to_n=5):
     # sys.exit(1)
     results.sort(key=lambda x: x[1])
 
-
     # delta = datetime.now() - start
     # print("Batch took ", delta.total_seconds(), "to complete.")
     return results[:up_to_n]
@@ -88,13 +88,13 @@ def batches(df, batch_size):
         i += 1
 
 
-def find_best_matches(df, user_image, up_to_n=5, gender=None):
+def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=False):
     if gender is not None:
         df = df[df['gender'] == gender]
     up_to_n = max(min(up_to_n, 128), 1)
 
     best = [(None, 10)] * up_to_n
-    user_face_encoding = create_face_encoding(user_image, False)
+    user_face_encoding = create_face_encoding(user_image)
 
     for batch in batches(df, 128):
         results = compare_faces(list(batch['encoding']), user_face_encoding)
@@ -104,6 +104,10 @@ def find_best_matches(df, user_image, up_to_n=5, gender=None):
 
     df = df[df['encoding'].isin([b[0] for b in best])]
     df.reset_index(inplace=True)
+
+    if show_user_face:
+        face_image = create_face_image(user_image)
+        Image.fromarray(face_image).show()
 
     return df
     
@@ -116,10 +120,9 @@ if __name__ == "__main__":
     df = pd.read_csv(DATASET_PATH, sep='|')
 
     user_file_location = './test_images/connie_w.jpg'
-    user_face_encoding = create_face_encoding(user_file_location, True)
 
     start = datetime.now()
-    results = find_best_matches(df, user_file_location, up_to_n=10)
+    results = find_best_matches(df, user_file_location, up_to_n=10, show_user_face=True)
     delta = datetime.now() - start
     print("Batch took ", delta.total_seconds(), "to complete.")
     print(results)
