@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import os
+import sys
+from pprint import pprint
 
 
 def create_face_encoding(image_loc, show_image = False):
@@ -63,10 +65,16 @@ def compare_faces(face_encodings_fp, face_to_compare):
     # start = datetime.now()
     face_encodings =  [get_face_encoding(fp) for fp in face_encodings_fp]
     results = face_recognition.face_distance(face_encodings, face_to_compare)
-    results = [(fp, r) for fp, r in zip(face_encodings_fp, results)][0]
+    results = [(fp, r) for fp, r in zip(face_encodings_fp, results)]
+    # pprint(results)
+
+    # sys.exit(1)
+    results.sort(key=lambda x: x[1], reverse=True)
+
+
     # delta = datetime.now() - start
     # print("Batch took ", delta.total_seconds(), "to complete.")
-    return results
+    return results[0]
 
 
 
@@ -84,17 +92,19 @@ if __name__ == "__main__":
 
     df = df[df['gender'] == 'Male']
 
-
     best = (None, 0)
 
-    user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
+    # user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
+    user_file_location = 'jeff_pic.jpg'
     user_face_encoding = create_face_encoding(user_file_location, False)
 
     start = datetime.now()
     for batch in batches(df, 128):
         results = compare_faces(list(batch['encoding']), user_face_encoding)
         best = max(best, results, key=lambda x: x[1])
+        # pprint("best: ", list(best))
     
+    print("Best = ", best)
     delta = datetime.now() - start
     print("Batch took ", delta.total_seconds(), "to complete.")
     print(best)
