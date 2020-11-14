@@ -92,18 +92,13 @@ if __name__ == "__main__":
     DATASET_PATH = r'./dataset.csv'
     df = pd.read_csv(DATASET_PATH, sep='|')
 
-    df = df[df['gender'] == 'Male']
+    df = df[df['gender'] == 'Female']
 
     best = [(None, 10)] * 5
 
     # user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
-<<<<<<< HEAD
-    user_file_location = './test_images/andy_k.jpg'
+    user_file_location = './test_images/connie_w.jpg'
     user_face_encoding = create_face_encoding(user_file_location, True)
-=======
-    user_file_location = 'tmp.jpg'
-    user_face_encoding = create_face_encoding(user_file_location, False)
->>>>>>> 365e10a28c6d788a99befeef9b4acd7a3959cfed
 
     start = datetime.now()
     for batch in batches(df, 128):
@@ -113,13 +108,13 @@ if __name__ == "__main__":
         best = best[:5]
         # pprint("best: ", list(best))
     
-    print("Best = ", best)
+    print("Best = ", [b[0] for b in best])
     # best_person_in_df = df[df['encoding'] == best[0]].reset_index(inplace=True)
 
 
     delta = datetime.now() - start
     print("Batch took ", delta.total_seconds(), "to complete.")
-    print(best)
+    # print(best)
 
         
         
