@@ -70,8 +70,6 @@ if __name__ == "__main__":
     delta = datetime.now() - start
     print("\nTook ", delta.total_seconds(), "seconds to complete!\n")
 
-    print(best)
-
     # print found names
     for idx, row in best.iterrows():
         print(' ------------------------------------------------ ')
