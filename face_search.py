@@ -61,7 +61,7 @@ def get_face_encoding(filepath):
     return encoding
 
     
-def compare_faces(face_encodings_fp, face_to_compare):
+def compare_faces(face_encodings_fp, face_to_compare, up_to_n=5):
     # start = datetime.now()
     face_encodings =  [get_face_encoding(fp) for fp in face_encodings_fp]
     results = face_recognition.face_distance(face_encodings, face_to_compare)
@@ -74,7 +74,7 @@ def compare_faces(face_encodings_fp, face_to_compare):
 
     # delta = datetime.now() - start
     # print("Batch took ", delta.total_seconds(), "to complete.")
-    return results[:5]
+    return results[:up_to_n]
 
 
 
@@ -86,30 +86,43 @@ def batches(df, batch_size):
         i += 1
 
 
+def find_best_matches(df, user_image, up_to_n=5, gender=None):
+    if gender is not None:
+        df = df[df['gender'] == gender]
+    up_to_n = max(min(up_to_n, 128), 1)
+
+    best = [(None, 10)] * up_to_n
+    user_face_encoding = create_face_encoding(user_image, False)
+
+    for batch in batches(df, 128):
+        results = compare_faces(list(batch['encoding']), user_face_encoding)
+        best.extend(results)
+        best.sort(key=lambda x: x[1])
+        best = best[:up_to_n]
+
+    df = df[df['encoding'].isin([b[0] for b in best])]
+    df.reset_index(inplace=True)
+
+    return df
+    
+
+
+
+
 if __name__ == "__main__":
     DATASET_PATH = r'./dataset.csv'
     df = pd.read_csv(DATASET_PATH, sep='|')
-
-    df = df[df['gender'] == 'Male']
-
-    best = [(None, 10)] * 5
 
     # user_file_location = './wiki/29/39301329_1997-01-07_2015.jpg'
     user_file_location = 'tmp.jpg'
     user_face_encoding = create_face_encoding(user_file_location, False)
 
     start = datetime.now()
-    for batch in batches(df, 128):
-        results = compare_faces(list(batch['encoding']), user_face_encoding)
-        best.extend(results)
-        best.sort(key=lambda x: x[1])
-        best = best[:5]
-        # pprint("best: ", list(best))
-    
-    print("Best = ", best)
+    results = find_best_matches(df, user_file_location, up_to_n=10)
     delta = datetime.now() - start
     print("Batch took ", delta.total_seconds(), "to complete.")
-    print(best)
+    print(results)
+
 
         
         
