@@ -16,8 +16,8 @@ df = df.transpose()
 
 df.columns = ['path', 'name', 'dob', 'gender']
 
-urls = pd.Series([" "] * df.shape[0], dtype=str)
-df['url'] = urls
+encodings = pd.Series([" "] * df.shape[0], dtype=str)
+df['encoding'] = encodings
 
 df = df[df['name'].apply(lambda x: len(x)) == 1]
 
