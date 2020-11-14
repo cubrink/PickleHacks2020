@@ -11,6 +11,7 @@ DATASET_PATH = r'./dataset.csv'
 
 df = pd.read_csv(DATASET_PATH, sep='|')
 
+
 for idx, row in df.iterrows():
     start = datetime.now()
     print(idx)
@@ -28,8 +29,6 @@ for idx, row in df.iterrows():
         face = sorted(face_locations, key=lambda x: (x[2] - x[0]) * (x[1] - x[3]), reverse=True)[0]
     else:
         face = face_locations[0]
-        print(row['path'])
-        input("No face detected: Press enter to continue...")
         
     
     # Extract face from image
