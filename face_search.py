@@ -109,6 +109,8 @@ def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=Fal
         face_image = create_face_image(user_image)
         Image.fromarray(face_image).show()
 
+    print(df)
+
     return df
     
 
