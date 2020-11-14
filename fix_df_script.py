@@ -13,8 +13,8 @@ df = pd.read_csv(DATASET_PATH, sep='|')
 
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 30000
-STOP_EXC = 100000
+START_INC = 0
+STOP_EXC = 15000
 
 BACKUP_LENGTH = 500
 
