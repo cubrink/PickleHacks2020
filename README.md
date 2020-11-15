@@ -28,3 +28,15 @@ Data processing, facial recognition
 
 Clean up the code a bit. Hopefully optimize it some.
 
+
+### Citation for IMDB-WIKI dataset. This couldn't have be done without them!
+@article{Rothe-IJCV-2018,
+  author = {Rasmus Rothe and Radu Timofte and Luc Van Gool},
+  title = {Deep expectation of real and apparent age from a single image without facial landmarks},
+  journal = {International Journal of Computer Vision},
+  volume={126},
+  number={2-4},
+  pages={144--157},
+  year={2018},
+  publisher={Springer}
+}
