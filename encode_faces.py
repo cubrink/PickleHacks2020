@@ -1,36 +1,48 @@
 import face_recognition
-from PIL import Image
 import pandas as pd
 import numpy as np
 import os
-import pickle
 
-from datetime import datetime
+"""
 
+This script is used to take a dataset of images and create an encoding for each image based on
+the library face_recognition. 
+
+Our dataset consisted of "path|name|dob|gender" and we added "|encoding" with this script
+
+"""
+
+# Path to dataset
 DATASET_PATH = r'./dataset.csv'
 
+# Read the current dataset
 df = pd.read_csv(DATASET_PATH, sep='|')
 
+# Directory to save the encodings to
 SAVE_DIR_BASE = os.path.join(os.getcwd(), 'encodings')
 
-START_INC = 30000
+# Range of idexes in the dataset to created encodings for
+START_INC = 0
 STOP_EXC = 100000
 
+# Number of files converted before a backup dataset is created
+# This is used un case an error occurs during the enconding process
 BACKUP_LENGTH = 500
 
+# Iterate through each row in the dataset
 for idx, row in df.iterrows():
+    # if the row index is not in the valid range
     if not (START_INC <= idx < STOP_EXC):
         continue
 
+    # Save a backup of the dataset if correct number of images have been processed
     if idx%BACKUP_LENGTH == 0:
         df.to_csv(f"./dataset-{START_INC}-{idx}.csv", sep='|', index=False)
         
-
+    # Tell user what idex is being processed
     print("Starting: #", idx)    
     # Load image from row
     image = face_recognition.load_image_file(row['path'])
-    
-    # image = face_recognition.load_image_file("family.jpeg")
 
     # Get all face locations
     face_locations = face_recognition.face_locations(image)
@@ -58,10 +70,8 @@ for idx, row in df.iterrows():
     left = max(0, left-horizontal_border)
     right = min(image.shape[1], right+horizontal_border)
 
-
+    # crop image to the largest face
     face_image = image[top:bottom, left:right]
-    # pil_image = Image.fromarray(face_image)
-    # pil_image.show()
 
     # Create encoding
     my_face_encodings = face_recognition.face_encodings(face_image)
@@ -80,9 +90,8 @@ for idx, row in df.iterrows():
 
     path_to_open = SAVE_DIR_BASE + filename
 
-
+    # Save the file
     print(f"Saving to {filename}")
-
     with open(path_to_open, 'wb') as outfile:
         np.save(outfile, my_face_encoding)
         df.iloc[idx]['encoding'] = './encoding' + filename
@@ -95,7 +104,7 @@ for idx, row in df.iterrows():
 
 
 
-
+# overwrite and save the dataset
 df.to_csv(f"./dataset-{START_INC}-DONE.csv", sep='|', index=False)
 
 print("Done!")

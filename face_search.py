@@ -129,6 +129,9 @@ def find_best_matches(df, user_image, up_to_n=5, gender=None, show_user_face=Fal
     df = df[df['encoding'].isin([b[0] for b in best])]
     df.reset_index(inplace=True)
 
+    # Sort by best result first
+    # STILL TO COME.....
+
     if show_user_face:
         # Show user face, if specified
         face_image = create_face_image(user_image)
@@ -144,7 +147,7 @@ if __name__ == "__main__":
     DATASET_PATH = r'./dataset.csv'
     df = pd.read_csv(DATASET_PATH, sep='|')
 
-    user_file_location = './test_images/connie_w.jpg'
+    user_file_location = './test_images/jeff_pic.jpg'
 
     start = datetime.now()
     results = find_best_matches(df, user_file_location, up_to_n=10, show_user_face=True)

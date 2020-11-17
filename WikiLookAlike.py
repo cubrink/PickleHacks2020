@@ -1,19 +1,18 @@
-# This is the main file to compare a users image to the dataset encodings
-
-import face_recognition
 from PIL import Image
 import pandas as pd
-import numpy as np
 from datetime import datetime
-from pprint import pprint
 import wikipedia
 import webbrowser
 import argparse
 from urllib.parse import quote
 
-
 from face_search import find_best_matches
 
+"""
+
+This is the main file to compare a users image to the dataset encodings
+
+"""
 
 WIKI_BASE = 'https://en.wikipedia.org/wiki/'
 
