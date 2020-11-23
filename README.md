@@ -8,6 +8,7 @@ We've been wanting to try face recognition for a while now. What better to try i
 ## What it does
 
 Finds a Wikipedia page that matches your face as closely as possible
+https://youtu.be/qv--URVIsaQ
 
 ## How I built it
 
